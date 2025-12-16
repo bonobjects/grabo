@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>ICON COMPOSER</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
 <style>
 body {
   margin: 0;
@@ -59,22 +60,16 @@ button {
   cursor: pointer;
   font-size: 12px;
 }
-button:disabled {
-  opacity: .4;
-  cursor: not-allowed;
-}
+button:hover { background:#444; }
 .download {
   margin-top: auto;
   background: linear-gradient(135deg,#6e6eff,#9f7cff);
   color: #000;
   font-weight: 700;
 }
-#result {
-  margin-top: 20px;
-  text-align: center;
-}
 </style>
 </head>
+
 <body>
 
 <header>ICON COMPOSER</header>
@@ -84,88 +79,48 @@ button:disabled {
 
   <div class="panel">
     <div class="group">
-      <h3>TYPE A</h3>
+      <h3>DEMO</h3>
       <div class="buttons">
-        <button onclick="setImage('A',0)">A-1</button>
-        <button onclick="setImage('A',1)">A-2</button>
+        <button onclick="drawDemo('#ff6e6e')">RED</button>
+        <button onclick="drawDemo('#6effa1')">GREEN</button>
       </div>
     </div>
 
-    <div class="group">
-      <h3>TYPE B</h3>
-      <div class="buttons">
-        <button onclick="setImage('B',0)">B-1</button>
-        <button onclick="setImage('B',1)">B-2</button>
-      </div>
-    </div>
-
-    <button id="exportBtn" class="download" onclick="exportImage()" disabled>
-      EXPORT
-    </button>
+    <button class="download" onclick="exportImage()">EXPORT PNG</button>
   </div>
 </main>
-
-<div id="result"></div>
 
 <script>
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const exportBtn = document.getElementById('exportBtn');
 
-const sources = {
-  A: ['images/typeA_1.png','images/typeA_2.png'],
-  B: ['images/typeB_1.png','images/typeB_2.png']
-};
-
-const imgs = { A: [], B: [] };
-let current = { A: 0, B: 0 };
-let loaded = 0;
-const TOTAL = 4;
-
-// preload
-Object.keys(sources).forEach(type => {
-  sources[type].forEach((src,i) => {
-    const img = new Image();
-    img.src = src;
-    img.onload = () => {
-      loaded++;
-      if (loaded === TOTAL) {
-        draw();
-        exportBtn.disabled = false;
-      }
-    };
-    img.onerror = () => {
-      alert('画像が読み込めません: ' + src);
-    };
-    imgs[type][i] = img;
-  });
-});
-
-function draw(){
+/* 画像が無くても分かるようにデモ描画 */
+function drawDemo(color){
   ctx.clearRect(0,0,512,512);
-  ctx.drawImage(imgs.A[current.A],0,0,512,512);
-  ctx.drawImage(imgs.B[current.B],0,0,512,512);
+  ctx.fillStyle = '#222';
+  ctx.fillRect(0,0,512,512);
+
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(256,256,160,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle = '#000';
+  ctx.font = '700 32px Inter';
+  ctx.textAlign = 'center';
+  ctx.fillText('ICON',256,270);
 }
 
-function setImage(type,index){
-  current[type] = index;
-  draw();
-}
-
+/* ★ ここが重要：強制ダウンロード */
 function exportImage(){
-  const data = canvas.toDataURL('image/png');
-  document.getElementById('result').innerHTML = `
-    <p style="font-size:12px;color:#aaa">
-      画像を長押しして保存してください
-    </p>
-    <img src="${data}" style="
-      width:220px;
-      border-radius:12px;
-      box-shadow:0 10px 30px rgba(0,0,0,.6);
-    ">
-  `;
-}
-</script>
+  const url = canvas.toDataURL('image/png');
 
-</body>
-</html>
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'icon.png';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+/
