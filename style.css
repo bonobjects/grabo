@@ -1,106 +1,66 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  background: #0b0f14;
-  color: #eaffff;
-  font-family: system-ui, sans-serif;
+  background: #0b1418;
+  font-family: Arial, sans-serif;
+  color: #6fffe9;
 }
 
 .app {
   display: flex;
-  height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
 }
 
-.stage {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.canvas-wrap {
+  width: 100%;
+  max-width: 360px;
+  border: 2px solid #2dd4bf;
+  margin-bottom: 16px;
 }
 
 canvas {
-  width: 360px;
-  height: 360px;
-  background: #000;
+  width: 100%;
+  height: auto;
+  display: block;
+  background: transparent;
 }
 
-.panel {
-  width: 320px;
-  padding: 16px;
-  overflow-y: auto;
-}
-
-h1 {
-  font-size: 14px;
-  letter-spacing: .3em;
-  opacity: .6;
-  margin-bottom: 20px;
-}
-
-.group {
-  margin-bottom: 24px;
-}
-
-.label {
-  font-size: 11px;
-  opacity: .6;
-  margin-bottom: 6px;
-  letter-spacing: .2em;
-}
-
-.row {
+.controls {
+  width: 100%;
+  max-width: 360px;
   display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.arrow {
-  width: 28px;
-  height: 28px;
-  background: #1a222c;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-}
-
-.track {
-  flex: 1;
-  display: flex;
+  flex-direction: column;
   gap: 10px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
 }
 
-.track::-webkit-scrollbar {
-  display: none;
+.swipe {
+  border: 1px solid #2dd4bf;
+  padding: 12px;
+  text-align: center;
+  letter-spacing: 2px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
 }
 
-.item {
-  min-width: 52px;
-  height: 36px;
-  background: #1f2a35;
-  opacity: .4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  scroll-snap-align: center;
-  transition: .15s;
-}
-
-.item.active {
-  opacity: 1;
-  transform: scale(1.15);
-  box-shadow:
-    0 0 10px #40e0d0,
-    0 0 30px #40e0d088;
+.swipe:active {
+  background: rgba(45, 212, 191, 0.2);
 }
 
 button {
-  width: 100%;
-  margin-top: 12px;
-  padding: 14px;
-  background: linear-gradient(90deg,#40e0d0,#00ced1);
+  background: #2dd4bf;
+  color: #002b2b;
   border: none;
-  font-weight: bold;
-  color: #002;
+  padding: 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+button:active {
+  opacity: 0.8;
 }
