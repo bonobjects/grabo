@@ -1,4 +1,4 @@
-x<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -59,7 +59,10 @@ button {
   cursor: pointer;
   font-size: 12px;
 }
-button:hover { background:#444; }
+button:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
 .download {
   margin-top: auto;
   background: linear-gradient(135deg,#6e6eff,#9f7cff);
@@ -96,7 +99,9 @@ button:hover { background:#444; }
       </div>
     </div>
 
-    <button class="download" onclick="exportImage()">EXPORT</button>
+    <button id="exportBtn" class="download" onclick="exportImage()" disabled>
+      EXPORT
+    </button>
   </div>
 </main>
 
@@ -105,6 +110,7 @@ button:hover { background:#444; }
 <script>
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+const exportBtn = document.getElementById('exportBtn');
 
 const sources = {
   A: ['images/typeA_1.png','images/typeA_2.png'],
@@ -120,11 +126,16 @@ const TOTAL = 4;
 Object.keys(sources).forEach(type => {
   sources[type].forEach((src,i) => {
     const img = new Image();
-    img.crossOrigin = 'anonymous';
     img.src = src;
     img.onload = () => {
       loaded++;
-      if (loaded === TOTAL) draw();
+      if (loaded === TOTAL) {
+        draw();
+        exportBtn.disabled = false;
+      }
+    };
+    img.onerror = () => {
+      alert('画像が読み込めません: ' + src);
     };
     imgs[type][i] = img;
   });
@@ -158,4 +169,3 @@ function exportImage(){
 
 </body>
 </html>
-
