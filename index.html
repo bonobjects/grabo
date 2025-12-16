@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>ICON COMPOSER</title>
@@ -9,12 +9,18 @@
 <body>
 
 <div class="app">
-  <div class="stage">
-    <canvas id="cv" width="512" height="512"></canvas>
+  <div class="canvas-wrap">
+    <canvas id="canvas" width="512" height="512"></canvas>
   </div>
 
-  <div class="panel" id="panel">
-    <h1>ICON COMPOSER</h1>
+  <div class="controls">
+    <div class="swipe" data-part="body">BODY</div>
+    <div class="swipe" data-part="head">HEAD</div>
+    <div class="swipe" data-part="face">FACE</div>
+    <div class="swipe" data-part="accessory">ACCESSORY</div>
+
+    <button id="randomBtn">RANDOM</button>
+    <button id="downloadBtn">DOWNLOAD</button>
   </div>
 </div>
 
