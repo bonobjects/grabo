@@ -1,0 +1,161 @@
+x<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ICON COMPOSER</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin: 0;
+  background: #0f0f10;
+  color: #eaeaea;
+  font-family: 'Inter', sans-serif;
+}
+header {
+  padding: 20px;
+  text-align: center;
+  letter-spacing: .15em;
+  font-weight: 700;
+}
+main {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  padding: 30px;
+}
+canvas {
+  background: #111;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.6);
+}
+.panel {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.group {
+  background: #161616;
+  border-radius: 12px;
+  padding: 16px;
+}
+.group h3 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  letter-spacing: .15em;
+  color: #999;
+}
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+button {
+  flex: 1;
+  background: #222;
+  color: #eee;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+button:hover { background:#444; }
+.download {
+  margin-top: auto;
+  background: linear-gradient(135deg,#6e6eff,#9f7cff);
+  color: #000;
+  font-weight: 700;
+}
+#result {
+  margin-top: 20px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<header>ICON COMPOSER</header>
+
+<main>
+  <canvas id="canvas" width="512" height="512"></canvas>
+
+  <div class="panel">
+    <div class="group">
+      <h3>TYPE A</h3>
+      <div class="buttons">
+        <button onclick="setImage('A',0)">A-1</button>
+        <button onclick="setImage('A',1)">A-2</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <h3>TYPE B</h3>
+      <div class="buttons">
+        <button onclick="setImage('B',0)">B-1</button>
+        <button onclick="setImage('B',1)">B-2</button>
+      </div>
+    </div>
+
+    <button class="download" onclick="exportImage()">EXPORT</button>
+  </div>
+</main>
+
+<div id="result"></div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+const sources = {
+  A: ['images/typeA_1.png','images/typeA_2.png'],
+  B: ['images/typeB_1.png','images/typeB_2.png']
+};
+
+const imgs = { A: [], B: [] };
+let current = { A: 0, B: 0 };
+let loaded = 0;
+const TOTAL = 4;
+
+// preload
+Object.keys(sources).forEach(type => {
+  sources[type].forEach((src,i) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = src;
+    img.onload = () => {
+      loaded++;
+      if (loaded === TOTAL) draw();
+    };
+    imgs[type][i] = img;
+  });
+});
+
+function draw(){
+  ctx.clearRect(0,0,512,512);
+  ctx.drawImage(imgs.A[current.A],0,0,512,512);
+  ctx.drawImage(imgs.B[current.B],0,0,512,512);
+}
+
+function setImage(type,index){
+  current[type] = index;
+  draw();
+}
+
+function exportImage(){
+  const data = canvas.toDataURL('image/png');
+  document.getElementById('result').innerHTML = `
+    <p style="font-size:12px;color:#aaa">
+      画像を長押しして保存してください
+    </p>
+    <img src="${data}" style="
+      width:220px;
+      border-radius:12px;
+      box-shadow:0 10px 30px rgba(0,0,0,.6);
+    ">
+  `;
+}
+</script>
+
+</body>
+</html>
+
