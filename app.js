@@ -1,143 +1,57 @@
-const canvas = document.getElementById('cv');
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
 const parts = {
-  body: 6,
-  head: 6,
-  acc:  6
+  body: 2,
+  head: 2,
+  face: 2,
+  accessory: 2
 };
+
+const order = ["body", "head", "face", "accessory"];
 
 const state = {
   body: 0,
   head: 0,
-  acc:  0
+  face: 0,
+  accessory: 0
 };
 
-let isGacha = false;
+function draw() {
+  ctx.clearRect(0, 0, 512, 512);
 
-/* ===== 画像ロード ===== */
-const images = {};
-Object.keys(parts).forEach(part=>{
-  images[part] = [];
-  for(let i=0;i<parts[part];i++){
+  order.forEach(part => {
     const img = new Image();
-    img.src = `images/${part}${i}.png`;
-    images[part].push(img);
-  }
+    img.src = `images/${part}${state[part]}.png`;
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, 512, 512);
+    };
+  });
+}
+
+draw();
+
+/* スワイプ（クリック簡易版） */
+document.querySelectorAll(".swipe").forEach(el => {
+  el.addEventListener("click", () => {
+    const part = el.dataset.part;
+    state[part] = (state[part] + 1) % parts[part];
+    draw();
+  });
 });
 
-/* ===== 描画（完全レイヤー合成） ===== */
-function draw(){
-  ctx.clearRect(0,0,512,512);
-  Object.keys(parts).forEach(part=>{
-    const img = images[part][state[part]];
-    if(img && img.complete){
-      ctx.drawImage(img,0,0,512,512);
-    }
+/* ランダム */
+document.getElementById("randomBtn").addEventListener("click", () => {
+  Object.keys(parts).forEach(part => {
+    state[part] = Math.floor(Math.random() * parts[part]);
   });
-}
-
-/* ===== UI構築 ===== */
-const panel = document.getElementById('panel');
-
-function buildUI(){
-  Object.keys(parts).forEach(part=>{
-    const group = document.createElement('div');
-    group.className = 'group';
-
-    const label = document.createElement('div');
-    label.className = 'label';
-    label.textContent = part.toUpperCase();
-
-    const row = document.createElement('div');
-    row.className = 'row';
-
-    const left = document.createElement('div');
-    left.className = 'arrow';
-    left.textContent = '◀';
-
-    const right = document.createElement('div');
-    right.className = 'arrow';
-    right.textContent = '▶';
-
-    const track = document.createElement('div');
-    track.className = 'track';
-    track.dataset.part = part;
-
-    for(let i=0;i<parts[part];i++){
-      const item = document.createElement('div');
-      item.className = 'item';
-      item.textContent = (i+1).toString().padStart(2,'0');
-      if(i===0) item.classList.add('active');
-
-      item.onclick = ()=>{
-        if(isGacha) return;
-        state[part] = i;
-        update(track,part);
-        draw();
-      };
-      track.appendChild(item);
-    }
-
-    left.onclick = ()=>step(part,-1);
-    right.onclick = ()=>step(part,1);
-
-    row.append(left,track,right);
-    group.append(label,row);
-    panel.appendChild(group);
-  });
-
-  const rand = document.createElement('button');
-  rand.textContent = 'RANDOM';
-  rand.onclick = gacha;
-  panel.appendChild(rand);
-
-  const dl = document.createElement('button');
-  dl.textContent = 'DOWNLOAD';
-  dl.onclick = ()=>{
-    const a = document.createElement('a');
-    a.href = canvas.toDataURL('image/png');
-    a.download = 'icon.png';
-    a.click();
-  };
-  panel.appendChild(dl);
-}
-
-/* ===== 中央化 ===== */
-function update(track,part){
-  [...track.children].forEach((el,i)=>{
-    el.classList.toggle('active',i===state[part]);
-  });
-  track.children[state[part]].scrollIntoView({
-    behavior:'smooth',
-    inline:'center'
-  });
-}
-
-/* ===== 切替 ===== */
-function step(part,dir){
-  state[part]=(state[part]+dir+parts[part])%parts[part];
-  const track=document.querySelector(`.track[data-part="${part}"]`);
-  update(track,part);
   draw();
-}
+});
 
-/* ===== ガチャ ===== */
-async function gacha(){
-  if(isGacha) return;
-  isGacha = true;
-
-  for(const part of Object.keys(parts)){
-    const spins = 12 + Math.floor(Math.random()*8);
-    for(let i=0;i<spins;i++){
-      step(part,1);
-      await new Promise(r=>setTimeout(r,30+i*4));
-    }
-  }
-
-  isGacha = false;
-}
-
-/* ===== 起動 ===== */
-buildUI();
-draw();
+/* ダウンロード */
+document.getElementById("downloadBtn").addEventListener("click", () => {
+  const link = document.createElement("a");
+  link.download = "icon.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+});
