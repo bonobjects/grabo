@@ -1,126 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>ICON COMPOSER</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
-
-<style>
-body {
-  margin: 0;
-  background: #0f0f10;
-  color: #eaeaea;
-  font-family: 'Inter', sans-serif;
-}
-header {
-  padding: 20px;
-  text-align: center;
-  letter-spacing: .15em;
-  font-weight: 700;
-}
-main {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  padding: 30px;
-}
-canvas {
-  background: #111;
-  border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0,0,0,.6);
-}
-.panel {
-  width: 220px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-.group {
-  background: #161616;
-  border-radius: 12px;
-  padding: 16px;
-}
-.group h3 {
-  margin: 0 0 10px;
-  font-size: 12px;
-  letter-spacing: .15em;
-  color: #999;
-}
-.buttons {
-  display: flex;
-  gap: 10px;
-}
-button {
-  flex: 1;
-  background: #222;
-  color: #eee;
-  border: none;
-  padding: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 12px;
-}
-button:hover { background:#444; }
-.download {
-  margin-top: auto;
-  background: linear-gradient(135deg,#6e6eff,#9f7cff);
-  color: #000;
-  font-weight: 700;
-}
-</style>
+  <meta charset="UTF-8" />
+  <title>ICON COMPOSER</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
-<header>ICON COMPOSER</header>
-
-<main>
-  <canvas id="canvas" width="512" height="512"></canvas>
-
-  <div class="panel">
-    <div class="group">
-      <h3>DEMO</h3>
-      <div class="buttons">
-        <button onclick="drawDemo('#ff6e6e')">RED</button>
-        <button onclick="drawDemo('#6effa1')">GREEN</button>
-      </div>
-    </div>
-
-    <button class="download" onclick="exportImage()">EXPORT PNG</button>
+<div class="app">
+  <div class="stage">
+    <canvas id="cv" width="512" height="512"></canvas>
   </div>
-</main>
 
-<script>
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+  <div class="panel" id="panel">
+    <h1>ICON COMPOSER</h1>
+  </div>
+</div>
 
-/* 画像が無くても分かるようにデモ描画 */
-function drawDemo(color){
-  ctx.clearRect(0,0,512,512);
-  ctx.fillStyle = '#222';
-  ctx.fillRect(0,0,512,512);
-
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.arc(256,256,160,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.fillStyle = '#000';
-  ctx.font = '700 32px Inter';
-  ctx.textAlign = 'center';
-  ctx.fillText('ICON',256,270);
-}
-
-/* ★ ここが重要：強制ダウンロード */
-function exportImage(){
-  const url = canvas.toDataURL('image/png');
-
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'icon.png';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
-
-/
+<script src="app.js"></script>
+</body>
+</html>
