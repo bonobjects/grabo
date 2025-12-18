@@ -1,37 +1,45 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+// 各カテゴリの画像枚数を指定（お手元の画像数に合わせて調整してください）
 const parts = {
+  background: 3, 
   body: 2,
-  head: 0,
+  head: 2,
   face: 2,
   accessory: 3
 };
 
-const order = ["body", "head", "face", "accessory"];
+const order = ["background", "body", "head", "face", "accessory"];
 
 const state = {
+  background: 0,
   body: 0,
   head: 0,
   face: 0,
   accessory: 0
 };
 
-function draw() {
+let randomCount = 0;
+
+async function draw() {
   ctx.clearRect(0, 0, 512, 512);
 
-  order.forEach(part => {
+  for (const part of order) {
     const img = new Image();
     img.src = `images/${part}${state[part]}.png`;
-    img.onload = () => {
-      ctx.drawImage(img, 0, 0, 512, 512);
-    };
-  });
+    await new Promise(resolve => {
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, 512, 512);
+        resolve();
+      };
+      img.onerror = resolve; 
+    });
+  }
 }
 
 draw();
 
-/* スワイプ（クリック簡易版） */
 document.querySelectorAll(".swipe").forEach(el => {
   el.addEventListener("click", () => {
     const part = el.dataset.part;
@@ -40,19 +48,23 @@ document.querySelectorAll(".swipe").forEach(el => {
   });
 });
 
-/* ランダム */
 document.getElementById("randomBtn").addEventListener("click", () => {
+  randomCount++;
+  document.getElementById("count").innerText = randomCount;
+
   Object.keys(parts).forEach(part => {
     state[part] = Math.floor(Math.random() * parts[part]);
   });
   draw();
+
+  if (randomCount >= 5) {
+    document.getElementById("controls").classList.add("bonus-mode");
+  }
 });
 
-/* ダウンロード */
 document.getElementById("downloadBtn").addEventListener("click", () => {
   const link = document.createElement("a");
   link.download = "icon.png";
   link.href = canvas.toDataURL("image/png");
   link.click();
 });
-
