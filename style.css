@@ -9,27 +9,28 @@ body {
   justify-content: center;
   padding: 20px;
 }
-/* タイトルのデザイン */
-.title {
-  font-size: 22px;
-  margin: 0 0 20px 0;
-  text-align: center;
-  color: #ffffff;
-  /* ネオン風の光るエフェクト */
-  text-shadow: 
-    0 0 7px #2dd4bf,
-    0 0 10px #2dd4bf,
-    0 0 21px #2dd4bf;
-  letter-spacing: 3px;
-  font-weight: bold;
-  text-transform: uppercase; /* 小文字で書いても大文字にする */
-}
+
 .app {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   max-width: 400px;
+}
+
+/* 怪獣 UNIGORN のネオンタイトル */
+.title {
+  font-size: 24px;
+  margin: 0 0 20px 0;
+  text-align: center;
+  color: #fff;
+  text-shadow: 
+    0 0 5px #2dd4bf,
+    0 0 10px #2dd4bf,
+    0 0 20px #2dd4bf;
+  letter-spacing: 3px;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
 .canvas-wrap {
@@ -47,6 +48,13 @@ canvas {
   display: block;
 }
 
+.controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 /* メニューの初期状態（非表示） */
 .swipe {
   display: none;
@@ -60,7 +68,7 @@ canvas {
   opacity: 0;
 }
 
-/* ボーナスモード発動時の表示アニメーション */
+/* ボーナスモード（5回クリック）でメニューを表示 */
 .bonus-mode .swipe {
   display: block;
   animation: fadeIn 0.8s forwards;
@@ -107,4 +115,3 @@ button {
 
 button:active { opacity: 0.7; }
 #downloadBtn { background: #6fffe9; }
-
