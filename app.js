@@ -6,7 +6,7 @@ const parts = {
   background: 3, 
   body: 2,
   face: 2,
-  head: 2,
+  head: 3,
   accessory: 3
 };
 
@@ -72,3 +72,4 @@ document.getElementById("downloadBtn").addEventListener("click", () => {
   link.href = canvas.toDataURL("image/png");
   link.click();
 });
+
