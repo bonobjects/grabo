@@ -3,9 +3,9 @@ const ctx = canvas.getContext("2d");
 
 const parts = {
   body: 2,
-  head: 2,
+  head: 0,
   face: 2,
-  accessory: 2
+  accessory: 3
 };
 
 const order = ["body", "head", "face", "accessory"];
@@ -55,3 +55,4 @@ document.getElementById("downloadBtn").addEventListener("click", () => {
   link.href = canvas.toDataURL("image/png");
   link.click();
 });
+
