@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d");
 
 // --- 設定エリア：自分で修正しやすい場所 ---
 const parts = {
-  background: 3, 
+  background: 4, 
   body: 2,
   face: 2,
   head: 3,
@@ -72,4 +72,5 @@ document.getElementById("downloadBtn").addEventListener("click", () => {
   link.href = canvas.toDataURL("image/png");
   link.click();
 });
+
 
