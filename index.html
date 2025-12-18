@@ -1,29 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>ICON COMPOSER</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+<div class="controls">
+  <div class="swipe" data-part="background">BACKGROUND</div>
+  <div class="swipe" data-part="body">BODY</div>
+  <div class="swipe" data-part="head">HEAD</div>
+  <div class="swipe" data-part="face">FACE</div>
+  <div class="swipe" data-part="accessory">ACCESSORY</div>
 
-<div class="app">
-  <div class="canvas-wrap">
-    <canvas id="canvas" width="512" height="512"></canvas>
-  </div>
-
-  <div class="controls">
-    <div class="swipe" data-part="body">BODY</div>
-    <div class="swipe" data-part="head">HEAD</div>
-    <div class="swipe" data-part="face">FACE</div>
-    <div class="swipe" data-part="accessory">ACCESSORY</div>
-
-    <button id="randomBtn">RANDOM</button>
-    <button id="downloadBtn">DOWNLOAD</button>
-  </div>
+  <button id="randomBtn">RANDOM (<span id="count">0</span>/5)</button>
+  <button id="downloadBtn">DOWNLOAD</button>
 </div>
-
-<script src="app.js"></script>
-</body>
-</html>
