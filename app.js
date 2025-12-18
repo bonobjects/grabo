@@ -5,7 +5,7 @@ const ctx = canvas.getContext("2d");
 const parts = {
   background: 4, 
   body: 2,
-  face: 3,
+  face: 4,
   head: 4,
   accessory: 3
 };
@@ -72,6 +72,7 @@ document.getElementById("downloadBtn").addEventListener("click", () => {
   link.href = canvas.toDataURL("image/png");
   link.click();
 });
+
 
 
 
