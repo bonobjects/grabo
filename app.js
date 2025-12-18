@@ -1,46 +1,35 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-// ★ここをお手持ちの画像枚数に合わせて書き換えてください
+// --- 設定エリア：自分で修正しやすい場所 ---
 const parts = {
   background: 3, 
   body: 2,
-  head: 2,
   face: 2,
+  head: 2,
   accessory: 3
 };
 
-const order = ["background", "body", "head", "face", "accessory"];
-const state = { background: 0, body: 0, head: 0, face: 0, accessory: 0 };
+// 描画の重なり順（後ろにあるものほど手前に描画される）
+const order = ["background", "body", "face", "head", "accessory"];
+// ---------------------------------------
+
+const state = { background: 0, body: 0, face: 0, head: 0, accessory: 0 };
 let randomCount = 0;
 
 async function draw() {
-  // 1. まずキャンバスを暗いグレーで塗る（キャンバスが存在するか確認するため）
-  ctx.fillStyle = "#222";
-  ctx.fillRect(0, 0, 512, 512);
-
-  // 2. 読み込み中である旨を画面に出す
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "20px Arial";
-  ctx.fillText("Loading images...", 20, 40);
+  ctx.clearRect(0, 0, 512, 512);
 
   for (const part of order) {
     const img = new Image();
-    // パスを修正（./images/ に変更）
-    const imagePath = `./images/${part}${state[part]}.png`;
-    img.src = imagePath;
+    img.src = `./images/${part}${state[part]}.png`;
 
     await new Promise(resolve => {
       img.onload = () => {
         ctx.drawImage(img, 0, 0, 512, 512);
         resolve();
       };
-      img.onerror = () => {
-        // 画像がない場合、画面にエラーを表示する
-        ctx.fillStyle = "#ff0000";
-        ctx.fillText(`Error: ${imagePath} not found`, 20, 70 + (order.indexOf(part) * 25));
-        resolve();
-      };
+      img.onerror = resolve; // 画像がない場合はエラーにせず次へ
     });
   }
 }
@@ -48,7 +37,7 @@ async function draw() {
 // 初期実行
 draw();
 
-// ボタン操作
+// メニュー項目のクリックイベント
 document.querySelectorAll(".swipe").forEach(el => {
   el.addEventListener("click", () => {
     const part = el.dataset.part;
@@ -57,18 +46,26 @@ document.querySelectorAll(".swipe").forEach(el => {
   });
 });
 
+// ランダムボタン
 document.getElementById("randomBtn").addEventListener("click", () => {
-  randomCount++;
-  document.getElementById("count").innerText = randomCount;
+  if (randomCount < 5) {
+    randomCount++;
+    document.getElementById("count").innerText = randomCount;
+  }
+
+  // 各パーツの状態をランダムに変更
   Object.keys(parts).forEach(part => {
     state[part] = Math.floor(Math.random() * parts[part]);
   });
   draw();
+
+  // 5回目でボーナスモードへ
   if (randomCount >= 5) {
     document.getElementById("controls").classList.add("bonus-mode");
   }
 });
 
+// ダウンロード機能
 document.getElementById("downloadBtn").addEventListener("click", () => {
   const link = document.createElement("a");
   link.download = "icon.png";
