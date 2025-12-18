@@ -9,7 +9,21 @@ body {
   justify-content: center;
   padding: 20px;
 }
-
+/* タイトルのデザイン */
+.title {
+  font-size: 22px;
+  margin: 0 0 20px 0;
+  text-align: center;
+  color: #ffffff;
+  /* ネオン風の光るエフェクト */
+  text-shadow: 
+    0 0 7px #2dd4bf,
+    0 0 10px #2dd4bf,
+    0 0 21px #2dd4bf;
+  letter-spacing: 3px;
+  font-weight: bold;
+  text-transform: uppercase; /* 小文字で書いても大文字にする */
+}
 .app {
   display: flex;
   flex-direction: column;
@@ -93,3 +107,4 @@ button {
 
 button:active { opacity: 0.7; }
 #downloadBtn { background: #6fffe9; }
+
