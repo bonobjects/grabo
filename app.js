@@ -1,7 +1,7 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-// 各カテゴリの画像枚数を指定（お手元の画像数に合わせて調整してください）
+// ★ここをお手持ちの画像枚数と「完全に一致」させてください
 const parts = {
   background: 3, 
   body: 2,
@@ -27,19 +27,27 @@ async function draw() {
 
   for (const part of order) {
     const img = new Image();
-    img.src = `images/${part}${state[part]}.png`;
+    const imagePath = `images/${part}${state[part]}.png`; // 読み込もうとしているパス
+    img.src = imagePath;
+
     await new Promise(resolve => {
       img.onload = () => {
         ctx.drawImage(img, 0, 0, 512, 512);
         resolve();
       };
-      img.onerror = resolve; 
+      img.onerror = () => {
+        // 画像が見つからない場合にエラーを表示
+        console.error(`画像が見つかりません: ${imagePath}`);
+        resolve(); // エラーでも止まらずに次のパーツへ
+      };
     });
   }
 }
 
+// 初期実行
 draw();
 
+// --- 以下、ボタン操作のロジック ---
 document.querySelectorAll(".swipe").forEach(el => {
   el.addEventListener("click", () => {
     const part = el.dataset.part;
@@ -51,12 +59,10 @@ document.querySelectorAll(".swipe").forEach(el => {
 document.getElementById("randomBtn").addEventListener("click", () => {
   randomCount++;
   document.getElementById("count").innerText = randomCount;
-
   Object.keys(parts).forEach(part => {
     state[part] = Math.floor(Math.random() * parts[part]);
   });
   draw();
-
   if (randomCount >= 5) {
     document.getElementById("controls").classList.add("bonus-mode");
   }
