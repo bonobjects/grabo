@@ -7,7 +7,7 @@ const parts = {
   body: 5,
   face: 4,
   head: 6,
-  limited: 3
+  limited: 2
 };
 
 // 描画の重なり順（後ろにあるものほど手前に描画される）
@@ -72,6 +72,7 @@ document.getElementById("downloadBtn").addEventListener("click", () => {
   link.href = canvas.toDataURL("image/png");
   link.click();
 });
+
 
 
 
