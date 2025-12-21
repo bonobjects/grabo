@@ -7,14 +7,14 @@ const parts = {
   body: 5,
   face: 4,
   head: 6,
-  accessory: 3
+  limited: 3
 };
 
 // 描画の重なり順（後ろにあるものほど手前に描画される）
-const order = ["background", "body", "face", "head", "accessory"];
+const order = ["background", "body", "face", "head", "limited"];
 // ---------------------------------------
 
-const state = { background: 0, body: 0, face: 0, head: 0, accessory: 0 };
+const state = { background: 0, body: 0, face: 0, head: 0, limited: 0 };
 let randomCount = 0;
 
 async function draw() {
@@ -72,6 +72,7 @@ document.getElementById("downloadBtn").addEventListener("click", () => {
   link.href = canvas.toDataURL("image/png");
   link.click();
 });
+
 
 
 
