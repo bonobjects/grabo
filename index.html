@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>UNIGORN GRABO - ULTIMATE UNIFY</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    /* --- CSS: スタイルと演出 --- */
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #0b1418;
+      font-family: 'Segoe UI', sans-serif;
+      color: #6fffe9;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .title {
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 0 5px #2dd4bf, 0 0 10px #2dd4bf;
+      letter-spacing: 3px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .canvas-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: 3px solid #2dd4bf;
+      margin-bottom: 20px;
+      background: #000;
+      box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
+      position: relative;
+    }
+
+    canvas { width: 100%; height: 100%; display: block; }
+
+    .controls { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+
+    /* パスコード入力エリア */
+    .passcode-form {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 15px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      background: #000;
+      border: 1px solid #2dd4bf;
+      color: #6fffe9;
+      padding: 10px;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .unlock-btn {
+      background: #2dd4bf;
+      color: #002b2b;
+      border: none;
+      padding: 0 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* アイテムメニュー */
+    .swipe {
+      display: none; /* 5回完了まで非表示 */
+      border: 1px solid #2dd4bf;
+      padding: 15px;
+      text-align: center;
+      letter-spacing: 2px;
+      cursor: pointer;
+      font-weight: bold;
+      background: rgba(45, 212, 191, 0.05);
+    }
+
+    #limitedCategory {
+      border: 2px solid #ff00ff;
+      color: #ff00ff;
+      text-shadow: 0 0 10px #ff00ff;
+      background: rgba(255, 0, 255, 0.1);
+    }
+
+    .buttons { display: flex; gap: 10px; margin-top: 10px; width: 100%; }
+
+    button {
+      flex: 1;
+      background: #2dd4bf;
+      color: #002b2b;
+      border: none;
+      padding: 15px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    /* 演出用クラス */
+    .bonus-mode .app { animation: glitch 0.15s infinite; }
+    .ng-shake { animation: shake 0.4s; border-color: #ff4444 !important; }
+
+    .flash-overlay {
+      position: fixed;
+      inset: 0;
+      background: white;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      25% { transform: translate(-2px, 2px); }
+      50% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="flash-overlay" id="flash"></div>
+
+<div class="app" id="app">
+  <h1 class="title">UNIGORN GRABO</h1>
+
+  <div class="canvas-wrap">
+    <canvas id="canvas" width="512" height="512"></canvas>
+  </div>
+
+  <div class="controls">
+    <div class="passcode-form" id="passForm">
+      <input type="text" id="passInput" placeholder="ENTER CODE" maxlength="10">
+      <button class="unlock-btn" id="unlockBtn">UNLOCK</button>
+    </div>
+
+    <div class="swipe item-menu" data-part="background">BACKGROUND</div>
+    <div class="swipe item-menu" data-part="body">BODY</div>
+    <div class="swipe item-menu" data-part="face">FACE</div>
+    <div class="swipe item-menu" data-part="head">HEAD</div>
+    <div class="swipe" data-part="limited" id="limitedCategory" style="display: none !important;">⚠️ LIMITED ⚠️</div>
+
+    <div class="buttons">
+      <button id="randomBtn">RANDOM (<span id="count">0</span>/5)</button>
+      <button id="downloadBtn">SAVE ICON</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  const app = document.getElementById("app");
+  const flash = document.getElementById("flash");
+  const limitedCategory = document.getElementById("limitedCategory");
+  const passInput = document.getElementById("passInput");
+  const passForm = document.getElementById("passForm");
+
+  const parts = { background: 4, body: 5, face: 4, head: 4, limited: 2 };
+  const order = ["background", "body", "face", "head", "limited"];
+  const state = { background: 0, body: 0, face: 0, head: 0, limited: 0 };
+  
+  let randomCount = 0;
+  const CORRECT_PASS = "bonobjects";
+
+  async function draw() {
+    ctx.clearRect(0, 0, 512, 512);
+    for (const part of order) {
+      if (part === 'limited' && limitedCategory.style.display !== "block") continue;
+      const img = new Image();
+      img.src = `./images/${part}${state[part]}.png`;
+      await new Promise(resolve => {
+        img.onload = () => { ctx.drawImage(img, 0, 0, 512, 512); resolve(); };
+        img.onerror = resolve;
+      });
+    }
+  }
+
+  draw();
+
+  // RANDOMボタン
+  document.getElementById("randomBtn").addEventListener("click", function() {
+    if (randomCount < 5) {
+      randomCount++;
+      document.getElementById("count").innerText = randomCount;
+    }
+
+    if (randomCount === 5) {
+      app.classList.add("bonus-mode");
+      document.querySelectorAll(".item-menu").forEach(el => el.style.display = "block");
+    }
+
+    Object.keys(parts).forEach(part => {
+      if (part === 'limited' && limitedCategory.style.display !== "block") {
+          state[part] = 0; 
+      } else {
+          state[part] = Math.floor(Math.random() * parts[part]);
+      }
+    });
+    draw();
+  });
+
+  // UNLOCKボタン（パスコード判定）
+  document.getElementById("unlockBtn").addEventListener("click", function() {
+    const val = passInput.value.toLowerCase();
+
+    if (val === CORRECT_PASS) {
+      // 成功：鍵が開くような演出（ホワイトアウト）
+      flash.style.opacity = "1";
+      flash.style.transition = "none";
+      
+      limitedCategory.style.setProperty("display", "block", "important");
+      passForm.style.display = "none"; // フォームを消す
+      
+      setTimeout(() => {
+        flash.style.transition = "opacity 0.8s ease-out";
+        flash.style.opacity = "0";
+      }, 50);
+      draw();
+    } else {
+      // 失敗：画面が震える NG演出
+      app.classList.add("ng-shake");
+      passInput.value = "ACCESS DENIED";
+      passInput.style.color = "#ff4444";
+      
+      setTimeout(() => {
+        app.classList.remove("ng-shake");
+        passInput.value = "";
+        passInput.style.color = "#6fffe9";
+      }, 500);
+    }
+  });
+
+  // 手動選択
+  document.querySelectorAll(".swipe").forEach(el => {
+    el.addEventListener("click", () => {
+      const part = el.dataset.part;
+      state[part] = (state[part] + 1) % parts[part];
+      draw();
+    });
+  });
+
+  document.getElementById("downloadBtn").addEventListener("click", () => {
+    const link = document.createElement("a");
+    link.download = "unigorn_custom.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+</script>
+</body>
+</html>
