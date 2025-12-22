@@ -2,10 +2,10 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>UNIGORN GRABO - ULTIMATE UNIFY</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UNIGORN GRABO - SMARTPHONE OPTIMIZED</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <style>
-    /* --- CSS: スタイルと演出 --- */
+    /* --- CSS: レスポンシブ・最適化 --- */
     * { box-sizing: border-box; }
 
     body {
@@ -15,7 +15,7 @@
       color: #6fffe9;
       display: flex;
       justify-content: center;
-      padding: 20px;
+      padding: 10px; /* 余白を少し削る */
       overflow-x: hidden;
     }
 
@@ -24,16 +24,16 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      max-width: 400px;
+      max-width: 400px; /* PCでもスマホでも最大400px */
     }
 
     .title {
-      font-size: 24px;
-      margin: 0 0 20px 0;
+      font-size: 20px; /* スマホ向けに少し小さく */
+      margin: 10px 0 15px 0;
       text-align: center;
       color: #fff;
       text-shadow: 0 0 5px #2dd4bf, 0 0 10px #2dd4bf;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       font-weight: 900;
       text-transform: uppercase;
     }
@@ -42,7 +42,7 @@
       width: 100%;
       aspect-ratio: 1 / 1;
       border: 3px solid #2dd4bf;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       background: #000;
       box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
       position: relative;
@@ -50,45 +50,59 @@
 
     canvas { width: 100%; height: 100%; display: block; }
 
-    .controls { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+    .controls { 
+      width: 100%; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 8px; 
+    }
 
-    /* パスコード入力エリア */
+    /* --- 【修正箇所】パスコードフォームの横幅崩れ対策 --- */
     .passcode-form {
       display: flex;
+      width: 100%; /* 親の幅に合わせる */
       gap: 5px;
       margin-bottom: 15px;
     }
 
     input[type="text"] {
-      flex: 1;
+      flex: 1; /* 残りの幅をすべて使う */
+      min-width: 0; /* Flexboxのはみ出し防止 */
       background: #000;
       border: 1px solid #2dd4bf;
       color: #6fffe9;
-      padding: 10px;
+      padding: 12px 5px; /* 上下はしっかり、左右は控えめ */
       font-weight: bold;
       text-align: center;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
+      font-size: 14px;
+      border-radius: 0;
+      -webkit-appearance: none; /* iOSのデフォルトスタイルをリセット */
     }
 
     .unlock-btn {
+      width: 80px; /* ボタン幅を固定して安定させる */
       background: #2dd4bf;
       color: #002b2b;
       border: none;
-      padding: 0 15px;
+      padding: 0;
       font-weight: bold;
       cursor: pointer;
+      font-size: 12px;
     }
 
     /* アイテムメニュー */
     .swipe {
-      display: none; /* 5回完了まで非表示 */
+      display: none;
+      width: 100%;
       border: 1px solid #2dd4bf;
-      padding: 15px;
+      padding: 12px;
       text-align: center;
       letter-spacing: 2px;
       cursor: pointer;
       font-weight: bold;
       background: rgba(45, 212, 191, 0.05);
+      font-size: 14px;
     }
 
     #limitedCategory {
@@ -98,21 +112,26 @@
       background: rgba(255, 0, 255, 0.1);
     }
 
-    .buttons { display: flex; gap: 10px; margin-top: 10px; width: 100%; }
+    .buttons { 
+      display: flex; 
+      gap: 8px; 
+      margin-top: 5px; 
+      width: 100%; 
+    }
 
     button {
       flex: 1;
       background: #2dd4bf;
       color: #002b2b;
       border: none;
-      padding: 15px;
-      font-size: 14px;
+      padding: 15px 5px;
+      font-size: 12px;
       font-weight: bold;
       cursor: pointer;
       text-transform: uppercase;
     }
 
-    /* 演出用クラス */
+    /* 演出アニメーション */
     .bonus-mode .app { animation: glitch 0.15s infinite; }
     .ng-shake { animation: shake 0.4s; border-color: #ff4444 !important; }
 
@@ -127,15 +146,15 @@
 
     @keyframes glitch {
       0% { transform: translate(0); }
-      25% { transform: translate(-2px, 2px); }
-      50% { transform: translate(2px, -2px); }
+      25% { transform: translate(-1px, 1px); }
+      50% { transform: translate(1px, -1px); }
       100% { transform: translate(0); }
     }
 
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-10px); }
-      40%, 80% { transform: translateX(10px); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
     }
   </style>
 </head>
@@ -152,7 +171,7 @@
 
   <div class="controls">
     <div class="passcode-form" id="passForm">
-      <input type="text" id="passInput" placeholder="ENTER CODE" maxlength="10">
+      <input type="text" id="passInput" placeholder="CODE HERE" maxlength="10">
       <button class="unlock-btn" id="unlockBtn">UNLOCK</button>
     </div>
 
@@ -182,8 +201,8 @@
   const order = ["background", "body", "face", "head", "limited"];
   const state = { background: 0, body: 0, face: 0, head: 0, limited: 0 };
   
-  let randomCount = 0;
-  const CORRECT_PASS = "bonobjects";
+  // パスワード設定
+  const CORRECT_PASS = "secret"; 
 
   async function draw() {
     ctx.clearRect(0, 0, 512, 512);
@@ -202,6 +221,7 @@
 
   // RANDOMボタン
   document.getElementById("randomBtn").addEventListener("click", function() {
+    let randomCount = parseInt(document.getElementById("count").innerText);
     if (randomCount < 5) {
       randomCount++;
       document.getElementById("count").innerText = randomCount;
@@ -222,29 +242,24 @@
     draw();
   });
 
-  // UNLOCKボタン（パスコード判定）
+  // UNLOCK判定
   document.getElementById("unlockBtn").addEventListener("click", function() {
     const val = passInput.value.toLowerCase();
-
     if (val === CORRECT_PASS) {
-      // 成功：鍵が開くような演出（ホワイトアウト）
       flash.style.opacity = "1";
       flash.style.transition = "none";
-      
       limitedCategory.style.setProperty("display", "block", "important");
-      passForm.style.display = "none"; // フォームを消す
-      
+      passForm.style.display = "none";
       setTimeout(() => {
         flash.style.transition = "opacity 0.8s ease-out";
         flash.style.opacity = "0";
       }, 50);
       draw();
     } else {
-      // 失敗：画面が震える NG演出
       app.classList.add("ng-shake");
-      passInput.value = "ACCESS DENIED";
+      const oldVal = passInput.value;
+      passInput.value = "DENIED";
       passInput.style.color = "#ff4444";
-      
       setTimeout(() => {
         app.classList.remove("ng-shake");
         passInput.value = "";
@@ -253,7 +268,7 @@
     }
   });
 
-  // 手動選択
+  // 手動切り替え
   document.querySelectorAll(".swipe").forEach(el => {
     el.addEventListener("click", () => {
       const part = el.dataset.part;
@@ -262,6 +277,7 @@
     });
   });
 
+  // 保存機能
   document.getElementById("downloadBtn").addEventListener("click", () => {
     const link = document.createElement("a");
     link.download = "unigorn_custom.png";
