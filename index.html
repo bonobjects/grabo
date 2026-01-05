@@ -197,12 +197,12 @@
   const passInput = document.getElementById("passInput");
   const passForm = document.getElementById("passForm");
 
-  const parts = { background: 6, body: 6, face: 4, head: 5, limited: 2 };
+  const parts = { background: 6, body: 6, face: 4, head: 5, limited: 1 };
   const order = ["background", "body", "face", "head", "limited"];
   const state = { background: 0, body: 0, face: 0, head: 0, limited: 0 };
   
   // パスワード設定
-  const CORRECT_PASS = "2026"; 
+  const CORRECT_PASS = "xxxxw"; 
 
   async function draw() {
     ctx.clearRect(0, 0, 512, 512);
@@ -287,6 +287,7 @@
 </script>
 </body>
 </html>
+
 
 
 
