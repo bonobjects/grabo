@@ -2,180 +2,57 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>UNIGORN GRABO ICON MAKER</title>
+  <title>UNIGORN AR CUSTOM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <style>
-    /* --- CSS: レスポンシブ・最適化 --- */
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: #0b1418;
-      font-family: 'Segoe UI', sans-serif;
-      color: #6fffe9;
-      display: flex;
-      justify-content: center;
-      padding: 10px; /* 余白を少し削る */
-      overflow-x: hidden;
+    * { box-sizing: border-box; touch-action: none; } /* ピンチ操作のためデフォルトのズームを禁止 */
+    body { margin: 0; background: #0b1418; font-family: 'Segoe UI', sans-serif; color: #6fffe9; display: flex; justify-content: center; padding: 10px; overflow-x: hidden; }
+    .app { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px; }
+    .title { font-size: 18px; margin: 10px 0; text-align: center; color: #fff; text-shadow: 0 0 5px #2dd4bf; letter-spacing: 2px; font-weight: 900; text-transform: uppercase; }
+    
+    .canvas-wrap { 
+      width: 100%; aspect-ratio: 1 / 1; border: 3px solid #2dd4bf; margin-bottom: 10px; 
+      background: #000; box-shadow: 0 0 15px rgba(45, 212, 191, 0.3); position: relative; overflow: hidden;
     }
-
-    .app {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      max-width: 400px; /* PCでもスマホでも最大400px */
-    }
-
-    .title {
-      font-size: 20px; /* スマホ向けに少し小さく */
-      margin: 10px 0 15px 0;
-      text-align: center;
-      color: #fff;
-      text-shadow: 0 0 5px #2dd4bf, 0 0 10px #2dd4bf;
-      letter-spacing: 2px;
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-
-    .canvas-wrap {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      border: 3px solid #2dd4bf;
-      margin-bottom: 15px;
-      background: #000;
-      box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
-      position: relative;
-    }
-
     canvas { width: 100%; height: 100%; display: block; }
 
-    .controls { 
-      width: 100%; 
-      display: flex; 
-      flex-direction: column; 
-      gap: 8px; 
-    }
+    .controls { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+    .passcode-form { display: flex; width: 100%; gap: 5px; margin-bottom: 10px; }
+    input[type="text"] { flex: 1; background: #000; border: 1px solid #2dd4bf; color: #6fffe9; padding: 12px; text-align: center; font-size: 14px; border-radius: 0; }
+    .unlock-btn { width: 80px; background: #2dd4bf; color: #002b2b; border: none; font-weight: bold; cursor: pointer; }
 
-    /* --- 【修正箇所】パスコードフォームの横幅崩れ対策 --- */
-    .passcode-form {
-      display: flex;
-      width: 100%; /* 親の幅に合わせる */
-      gap: 5px;
-      margin-bottom: 15px;
-    }
+    .swipe { display: none; width: 100%; border: 1px solid #2dd4bf; padding: 10px; text-align: center; cursor: pointer; font-weight: bold; background: rgba(45, 212, 191, 0.05); font-size: 12px; }
+    #limitedCategory { border: 2px solid #ff00ff; color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
 
-    input[type="text"] {
-      flex: 1; /* 残りの幅をすべて使う */
-      min-width: 0; /* Flexboxのはみ出し防止 */
-      background: #000;
-      border: 1px solid #2dd4bf;
-      color: #6fffe9;
-      padding: 12px 5px; /* 上下はしっかり、左右は控えめ */
-      font-weight: bold;
-      text-align: center;
-      letter-spacing: 1px;
-      font-size: 14px;
-      border-radius: 0;
-      -webkit-appearance: none; /* iOSのデフォルトスタイルをリセット */
-    }
+    .buttons { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; }
+    button { flex: 1; min-width: 45%; background: #2dd4bf; color: #002b2b; border: none; padding: 15px 5px; font-size: 11px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+    #arBtn { background: #ff00ff; color: #fff; }
+    #downloadBtn { flex-basis: 100%; background: #fff; color: #000; }
 
-    .unlock-btn {
-      width: 80px; /* ボタン幅を固定して安定させる */
-      background: #2dd4bf;
-      color: #002b2b;
-      border: none;
-      padding: 0;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    /* アイテムメニュー */
-    .swipe {
-      display: none;
-      width: 100%;
-      border: 1px solid #2dd4bf;
-      padding: 12px;
-      text-align: center;
-      letter-spacing: 2px;
-      cursor: pointer;
-      font-weight: bold;
-      background: rgba(45, 212, 191, 0.05);
-      font-size: 14px;
-    }
-
-    #limitedCategory {
-      border: 2px solid #ff00ff;
-      color: #ff00ff;
-      text-shadow: 0 0 10px #ff00ff;
-      background: rgba(255, 0, 255, 0.1);
-    }
-
-    .buttons { 
-      display: flex; 
-      gap: 8px; 
-      margin-top: 5px; 
-      width: 100%; 
-    }
-
-    button {
-      flex: 1;
-      background: #2dd4bf;
-      color: #002b2b;
-      border: none;
-      padding: 15px 5px;
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-
-    /* 演出アニメーション */
     .bonus-mode .app { animation: glitch 0.15s infinite; }
-    .ng-shake { animation: shake 0.4s; border-color: #ff4444 !important; }
-
-    .flash-overlay {
-      position: fixed;
-      inset: 0;
-      background: white;
-      z-index: 9999;
-      pointer-events: none;
-      opacity: 0;
-    }
-
-    @keyframes glitch {
-      0% { transform: translate(0); }
-      25% { transform: translate(-1px, 1px); }
-      50% { transform: translate(1px, -1px); }
-      100% { transform: translate(0); }
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-5px); }
-      40%, 80% { transform: translateX(5px); }
-    }
+    @keyframes glitch { 0% { transform: translate(0); } 25% { transform: translate(-1px, 1px); } 50% { transform: translate(1px, -1px); } 100% { transform: translate(0); } }
+    .flash-overlay { position: fixed; inset: 0; background: white; z-index: 9999; pointer-events: none; opacity: 0; }
   </style>
 </head>
 <body>
 
 <div class="flash-overlay" id="flash"></div>
+<video id="video" autoplay playsinline style="display:none;"></video>
 
 <div class="app" id="app">
-  <h1 class="title">UNIGORN GRABO ICON MAKER</h1>
+  <h1 class="title">UNIGORN AR CUSTOM</h1>
 
-  <div class="canvas-wrap">
+  <div class="canvas-wrap" id="canvasContainer">
     <canvas id="canvas" width="512" height="512"></canvas>
   </div>
 
   <div class="controls">
     <div class="passcode-form" id="passForm">
       <input type="text" id="passInput" placeholder="CODE HERE" maxlength="10">
-      <button class="unlock-btn" id="unlockBtn">UNLOCK</button>
+      <button class="unlock-btn" id="unlockBtn">OK</button>
     </div>
 
-    <div class="swipe item-menu" data-part="background">BACKGROUND</div>
+    <div class="swipe item-menu" data-part="background">CHANGE BG</div>
     <div class="swipe item-menu" data-part="body">BODY</div>
     <div class="swipe item-menu" data-part="face">FACE</div>
     <div class="swipe item-menu" data-part="head">HEAD</div>
@@ -183,115 +60,159 @@
 
     <div class="buttons">
       <button id="randomBtn">RANDOM (<span id="count">0</span>/5)</button>
+      <button id="arBtn">START AR</button>
       <button id="downloadBtn">SAVE ICON</button>
     </div>
+    <p style="font-size: 10px; text-align: center; margin: 5px 0;">※ピンチ操作でキャラクターを拡大縮小</p>
   </div>
 </div>
 
 <script>
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
+  const video = document.getElementById("video");
   const app = document.getElementById("app");
   const flash = document.getElementById("flash");
   const limitedCategory = document.getElementById("limitedCategory");
   const passInput = document.getElementById("passInput");
-  const passForm = document.getElementById("passForm");
 
   const parts = { background: 6, body: 6, face: 4, head: 5, limited: 1 };
   const order = ["background", "body", "face", "head", "limited"];
-  const state = { background: 0, body: 0, face: 0, head: 0, limited: 0 };
+  const state = { background: 0, body: 0, face: 0, head: 0, limited: 0, scale: 1.0 };
   
-  // パスワード設定
+  let arMode = false;
   const CORRECT_PASS = "xxxxw"; 
 
-  async function draw() {
-    ctx.clearRect(0, 0, 512, 512);
-    for (const part of order) {
-      if (part === 'limited' && limitedCategory.style.display !== "block") continue;
-      const img = new Image();
-      img.src = `./images/${part}${state[part]}.png`;
-      await new Promise(resolve => {
-        img.onload = () => { ctx.drawImage(img, 0, 0, 512, 512); resolve(); };
-        img.onerror = resolve;
-      });
+  // --- ピンチ操作ロジック ---
+  let initialDist = null;
+  let currentScale = 1.0;
+
+  canvas.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 2) {
+      initialDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
     }
+  });
+
+  canvas.addEventListener("touchmove", (e) => {
+    if (e.touches.length === 2 && initialDist) {
+      const dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+      const zoom = dist / initialDist;
+      state.scale = Math.min(Math.max(currentScale * zoom, 0.5), 3.0); // 0.5倍〜3倍に制限
+      if (arMode) draw(); // ARモード時は描画ループがあるが念のため
+    }
+  });
+
+  canvas.addEventListener("touchend", () => {
+    initialDist = null;
+    currentScale = state.scale;
+  });
+
+  // --- 描画ロジック ---
+  const imgCache = {};
+  function getPartImage(part, index) {
+    const key = `${part}${index}`;
+    if (!imgCache[key]) {
+      imgCache[key] = new Image();
+      imgCache[key].src = `./images/${part}${index}.png`;
+    }
+    return imgCache[key];
   }
 
-  draw();
+  function draw() {
+    ctx.clearRect(0, 0, 512, 512);
 
-  // RANDOMボタン
-  document.getElementById("randomBtn").addEventListener("click", function() {
-    let randomCount = parseInt(document.getElementById("count").innerText);
-    if (randomCount < 5) {
-      randomCount++;
-      document.getElementById("count").innerText = randomCount;
+    // 1. 背面描画（AR映像 or 通常背景）
+    if (arMode && video.readyState >= 2) {
+      const size = Math.min(video.videoWidth, video.videoHeight);
+      const sx = (video.videoWidth - size) / 2;
+      const sy = (video.videoHeight - size) / 2;
+      ctx.drawImage(video, sx, sy, size, size, 0, 0, 512, 512);
+    } else if (!arMode) {
+      const bgImg = getPartImage('background', state.background);
+      ctx.drawImage(bgImg, 0, 0, 512, 512);
     }
 
-    if (randomCount === 5) {
+    // 2. キャラクター描画（拡大縮小を適用）
+    ctx.save();
+    ctx.translate(256, 256); // 中心に移動
+    ctx.scale(state.scale, state.scale); // 拡大縮小
+    ctx.translate(-256, -256); // 戻す
+
+    for (const part of order) {
+      if (part === 'background') continue;
+      if (part === 'limited' && limitedCategory.style.display !== "block") continue;
+      const img = getPartImage(part, state[part]);
+      if (img.complete) ctx.drawImage(img, 0, 0, 512, 512);
+    }
+    ctx.restore();
+
+    if (arMode) requestAnimationFrame(draw);
+  }
+
+  // AR起動ボタン
+  document.getElementById("arBtn").addEventListener("click", async function() {
+    try {
+      if (!arMode) {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        video.srcObject = stream;
+        arMode = true;
+        this.innerText = "EXIT AR";
+        draw();
+      } else {
+        const stream = video.srcObject;
+        stream.getTracks().forEach(track => track.stop());
+        arMode = false;
+        this.innerText = "START AR";
+        draw();
+      }
+    } catch (err) {
+      alert("カメラを起動できません（HTTPS環境が必要です）");
+    }
+  });
+
+  // RANDOM・UNLOCK・その他（既存ロジック維持）
+  document.getElementById("randomBtn").addEventListener("click", () => {
+    let countEl = document.getElementById("count");
+    let count = parseInt(countEl.innerText);
+    if (count < 5) countEl.innerText = ++count;
+    if (count === 5) {
       app.classList.add("bonus-mode");
       document.querySelectorAll(".item-menu").forEach(el => el.style.display = "block");
     }
-
-    Object.keys(parts).forEach(part => {
-      if (part === 'limited' && limitedCategory.style.display !== "block") {
-          state[part] = 0; 
-      } else {
-          state[part] = Math.floor(Math.random() * parts[part]);
+    Object.keys(parts).forEach(p => {
+      if (p !== 'limited' || limitedCategory.style.display === "block") {
+        state[p] = Math.floor(Math.random() * parts[p]);
       }
     });
-    draw();
+    if (!arMode) draw();
   });
 
-  // UNLOCK判定
-  document.getElementById("unlockBtn").addEventListener("click", function() {
-    const val = passInput.value.toLowerCase();
-    if (val === CORRECT_PASS) {
+  document.getElementById("unlockBtn").addEventListener("click", () => {
+    if (passInput.value.toLowerCase() === CORRECT_PASS) {
       flash.style.opacity = "1";
-      flash.style.transition = "none";
       limitedCategory.style.setProperty("display", "block", "important");
-      passForm.style.display = "none";
-      setTimeout(() => {
-        flash.style.transition = "opacity 0.8s ease-out";
-        flash.style.opacity = "0";
-      }, 50);
-      draw();
-    } else {
-      app.classList.add("ng-shake");
-      const oldVal = passInput.value;
-      passInput.value = "DENIED";
-      passInput.style.color = "#ff4444";
-      setTimeout(() => {
-        app.classList.remove("ng-shake");
-        passInput.value = "";
-        passInput.style.color = "#6fffe9";
-      }, 500);
+      document.getElementById("passForm").style.display = "none";
+      setTimeout(() => { flash.style.opacity = "0"; flash.style.transition = "opacity 0.8s"; }, 50);
+      if (!arMode) draw();
     }
   });
 
-  // 手動切り替え
   document.querySelectorAll(".swipe").forEach(el => {
     el.addEventListener("click", () => {
-      const part = el.dataset.part;
-      state[part] = (state[part] + 1) % parts[part];
-      draw();
+      const p = el.dataset.part;
+      state[p] = (state[p] + 1) % parts[p];
+      if (!arMode) draw();
     });
   });
 
-  // 保存機能
   document.getElementById("downloadBtn").addEventListener("click", () => {
     const link = document.createElement("a");
-    link.download = "unigorn_custom.png";
+    link.download = "unigorn_ar.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
   });
+
+  window.onload = () => draw();
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
