@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>UNIGORN CUSTOM</title>
+  <title>GRABO ICON COMPOSER</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <style>
     /* ピンチ操作はcanvasのみに限定（全体へのtouch-action:noneを廃止） */
@@ -15,9 +15,8 @@
       color: #6fffe9;
       display: flex;
       justify-content: center;
-      padding: 10px;
       overflow-x: hidden;
-      touch-action: pan-y; /* 縦スクロールは許可 */
+      touch-action: pan-y;
     }
 
     .app {
@@ -28,9 +27,24 @@
       max-width: 400px;
     }
 
+    /* ========================================
+       スティッキーヘッダー：タイトル＋キャンバスを
+       スクロールしても画面上部に固定
+    ======================================== */
+    .sticky-top {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      background: #0b1418;
+      padding: 6px 10px 4px;
+      border-bottom: 1px solid rgba(45, 212, 191, 0.3);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
+    }
+
     .title {
-      font-size: 18px;
-      margin: 10px 0;
+      font-size: 16px;
+      margin: 0 0 6px;
       text-align: center;
       color: #fff;
       text-shadow: 0 0 5px #2dd4bf;
@@ -39,12 +53,18 @@
       text-transform: uppercase;
     }
 
+    /* スクロール可能なコントロールエリア */
+    .scroll-area {
+      width: 100%;
+      padding: 10px;
+    }
+
     /* キャンバスコンテナ */
     .canvas-wrap {
       width: 100%;
       aspect-ratio: 1 / 1;
       border: 3px solid #2dd4bf;
-      margin-bottom: 10px;
+      margin-bottom: 0;
       background: #000;
       box-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
       position: relative;
@@ -253,49 +273,54 @@
 <video id="video" autoplay playsinline style="display:none;"></video>
 
 <div class="app" id="app">
-  <h1 class="title">UNIGORN AR CUSTOM</h1>
 
-  <div class="canvas-wrap" id="canvasContainer">
-    <canvas id="canvas" width="512" height="512"></canvas>
-
-    <!-- ローディング表示 -->
-    <div id="loadingOverlay">
-      <div>LOADING...</div>
-      <div id="loadingBar"><div id="loadingBarFill"></div></div>
+  <!-- ===== 固定エリア：スクロールしても常に表示 ===== -->
+  <div class="sticky-top">
+    <h1 class="title">GRABO ICON COMPOSER</h1>
+    <div class="canvas-wrap" id="canvasContainer">
+      <canvas id="canvas" width="512" height="512"></canvas>
+      <div id="loadingOverlay">
+        <div>LOADING...</div>
+        <div id="loadingBar"><div id="loadingBarFill"></div></div>
+      </div>
     </div>
   </div>
 
-  <div class="controls">
-    <div class="passcode-form" id="passForm">
-      <input type="text" id="passInput" placeholder="CODE HERE" maxlength="10">
-      <button class="unlock-btn" id="unlockBtn">OK</button>
-    </div>
-
-    <div class="accordion-item" id="customizeMenu">
-      <div class="accordion-header">📝 CUSTOMIZE PARTS</div>
-      <div class="accordion-content">
-        <div class="category-item" data-part="background" data-current="0/5">CHANGE BG</div>
-        <div class="category-item" data-part="body" data-current="0/5">BODY</div>
-        <div class="category-item" data-part="face" data-current="0/3">FACE</div>
-        <div class="category-item" data-part="head" data-current="0/4">HEAD</div>
+  <!-- ===== スクロールエリア：コントロールパネル ===== -->
+  <div class="scroll-area">
+    <div class="controls">
+      <div class="passcode-form" id="passForm">
+        <input type="text" id="passInput" placeholder="CODE HERE" maxlength="10">
+        <button class="unlock-btn" id="unlockBtn">OK</button>
       </div>
-    </div>
 
-    <div class="accordion-item limited" id="limitedMenu" style="display: none;">
-      <div class="accordion-header">⚠️ LIMITED ⚠️</div>
-      <div class="accordion-content">
-        <div class="category-item" data-part="limited" data-current="0/0">LIMITED PARTS</div>
+      <div class="accordion-item" id="customizeMenu">
+        <div class="accordion-header">📝 CUSTOMIZE PARTS</div>
+        <div class="accordion-content">
+          <div class="category-item" data-part="background" data-current="0/5">CHANGE BG</div>
+          <div class="category-item" data-part="body" data-current="0/5">BODY</div>
+          <div class="category-item" data-part="face" data-current="0/3">FACE</div>
+          <div class="category-item" data-part="head" data-current="0/4">HEAD</div>
+        </div>
       </div>
-    </div>
 
-    <div class="buttons">
-      <button id="randomBtn">RANDOM (<span id="count">0</span>/5)</button>
-      <button id="arBtn">START AR</button>
-      <button id="downloadBtn">SAVE ICON</button>
-    </div>
+      <div class="accordion-item limited" id="limitedMenu" style="display: none;">
+        <div class="accordion-header">⚠️ LIMITED ⚠️</div>
+        <div class="accordion-content">
+          <div class="category-item" data-part="limited" data-current="0/0">LIMITED PARTS</div>
+        </div>
+      </div>
 
-    <p style="font-size: 10px; text-align: center; margin: 5px 0;">※ピンチ操作でキャラクターを拡大縮小</p>
+      <div class="buttons">
+        <button id="randomBtn">RANDOM (<span id="count">0</span>/5)</button>
+        <button id="arBtn">START AR</button>
+        <button id="downloadBtn">SAVE ICON</button>
+      </div>
+
+      <p style="font-size: 10px; text-align: center; margin: 5px 0;">※ピンチ操作でキャラクターを拡大縮小</p>
+    </div>
   </div>
+
 </div>
 
 <script>
@@ -613,4 +638,3 @@
 </script>
 </body>
 </html>
-
